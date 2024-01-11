@@ -61,3 +61,36 @@ export const getOneUser = async(req:Request, res:Response)=>{
         });
     }
 };
+
+export const verifyUser = async(req:Request, res:Response)=>{
+    try {
+        const {token} = req.body;
+
+        const user = await userModel.findOne({token});
+        if (user) {
+            await userModel.findByIdAndUpdate(
+                user._id,
+                {
+                    token: "",
+                    verify: true
+                },
+                {
+                    new: true
+                }
+            )
+            return res.status(HTTP.CREATED).json({
+                message: 'user successfully verified',
+                data: user
+            })
+        } else {
+            return res.status(HTTP.BAD_REQUEST).json({
+                message: "no user found"
+            });
+        }
+    } catch (error:any) {
+        return res.status(HTTP.BAD_REQUEST).json({
+            message: "error finding verifing",
+            data: error.message
+        });
+    }
+};
