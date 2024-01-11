@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn index.ts",
-    "build": "rm -rf test && tsc",
-    "start": "npm run build && node ./dist/index.js && cp -r views dist"
+    "build": "rm -rf test && tsc && cp -r views dist",
+    "start": "npm run build && node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
