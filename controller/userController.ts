@@ -3,6 +3,7 @@ import { HTTP } from "../utils/enums";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import userModel from "../model/userModel";
+import { sendEmail } from "../utils/email";
 
 export const createUser = async(req:Request, res:Response)=>{
     try {
@@ -18,6 +19,7 @@ export const createUser = async(req:Request, res:Response)=>{
             password: hashedPassword,
             token
         });
+        sendEmail(user);
         return res.status(HTTP.CREATED).json({
             message: 'user successfully created',
             data: user
@@ -25,6 +27,37 @@ export const createUser = async(req:Request, res:Response)=>{
     } catch (error) {
         return res.status(HTTP.BAD_REQUEST).json({
             message: "error creating user"
+        });
+    }
+};
+
+export const getAllUser = async(req:Request, res:Response)=>{
+    try {
+
+        const user = await userModel.find();
+        return res.status(HTTP.CREATED).json({
+            message: 'users successfully found',
+            data: user
+        })
+    } catch (error) {
+        return res.status(HTTP.BAD_REQUEST).json({
+            message: "error finding users"
+        });
+    }
+};
+
+export const getOneUser = async(req:Request, res:Response)=>{
+    try {
+        const {userID} = req.params;
+
+        const user = await userModel.findById(userID);
+        return res.status(HTTP.CREATED).json({
+            message: 'user successfully found',
+            data: user
+        })
+    } catch (error) {
+        return res.status(HTTP.BAD_REQUEST).json({
+            message: "error finding user"
         });
     }
 };
