@@ -1,19 +1,19 @@
 import express, { Application, NextFunction, Request, Response } from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+import env from "dotenv";
+import { dbConfig } from "./utils/dbConfig";
 import { mainApp } from "./mainApp";
-import { dbConfig } from "./config/dbConfig";
+env.config();
 import expressSession from "express-session";
 import bodyParser from "body-parser";
-import  MongoDBStore  from "connect-mongodb-session";
 import cookieParser from "cookie-parser";
+import MongoDBStore from "connect-mongodb-session";
 import passport from "passport";
 
-dotenv.config();
-const mongoConnect =  MongoDBStore(expressSession);
+const mongoConnect = MongoDBStore(expressSession);
 
-const port:number = parseInt(process.env.PORT!);
-const app:Application = express();
+const app: Application = express();
+const port: number = parseInt(process.env.PORT!);
 
 app.set("trust proxy", 1);
 
@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
   expressSession({
-    name: "Nzube",
+    name: "peter",
     secret: "cookie/session_secret",
     resave: false,
     saveUninitialized: false,
@@ -62,6 +62,7 @@ passport.deserializeUser(function (user: any, cb) {
   return cb(null, user);
 });
 
+mainApp(app);
 
 app.use((req: any, res: Response, next: NextFunction) => {
   if (req.session && !req.session.regenerate) {
@@ -85,19 +86,14 @@ const server = app.listen(port, () => {
   dbConfig();
 });
 
-app.use(express.json());
-app.use(cors());
-mainApp(app);
-
-
-process.on("uncaughtException",(err:Error)=>{
-    console.log("uncaughtException",err);
-    process.exit(1);
+process.on("uncaughtException", (error: Error) => {
+  console.log("uncaughtException: ", error);
+  process.exit(1);
 });
 
-process.on("unhandledRejection",(reason:any)=>{
-    console.log("unhandledRejection",reason);
-    server.close(()=>{
-        process.exit(1);
-    });
+process.on("rejectionHandled", (reason: any) => {
+  console.log("rejectionHandled: ", reason);
+  server.close(() => {
+    process.exit(1);
+  });
 });

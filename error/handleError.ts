@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { mainError } from "./mainError";
 import { HTTP } from "../utils/enums";
 
