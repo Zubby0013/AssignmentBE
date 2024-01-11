@@ -8,7 +8,8 @@ const userModel = new Schema<iUserData>(
             type: String
         },
         email:{
-            type: String
+            type: String,
+            unique: true
         },
         password:{
             type: String

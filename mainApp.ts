@@ -5,10 +5,13 @@ import { handleError } from "./error/handleError";
 import passport from "passport";
 import Google from "passport-google-oauth20";
 import userModel from "./model/userModel";
+import auth from "./router/userRouter";
+
 const GoogleStrategy = Google.Strategy;
 
 export const mainApp = (app:Application)=>{
     try {
+        app.use("/api",auth)
         app.get("/", (req: Request, res: Response): Response => {
             try {
               const user = req.user;
